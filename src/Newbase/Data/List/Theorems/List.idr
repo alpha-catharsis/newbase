@@ -34,3 +34,8 @@ appendCons : (xs : List a) -> (y : a) -> (ys : List a) ->
              xs ++ (y :: ys) = (snoc y xs) ++ ys
 appendCons []      y ys = Refl
 appendCons (x::xs) y ys = cong (x::) (appendCons xs y ys)
+
+export
+consAppend : (x : a) -> (xs, ys : List a) ->
+             (x :: xs) ++ ys = x :: (xs ++ ys)
+consAppend _ _ _ = Refl
