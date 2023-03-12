@@ -8,5 +8,6 @@ module Newbase.Data.List.Theorems
 -- Public imports
 -----------------
 
+import public Newbase.Data.List.Theorems.Elem
 import public Newbase.Data.List.Theorems.List
 import public Newbase.Data.List.Theorems.Reverse
