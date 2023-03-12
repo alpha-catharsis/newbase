@@ -18,9 +18,15 @@ import Newbase.Data.Nat.Theorems.Plus
 -- exact lenghth
 ----------------
 
+export
 exactLength : HasLength k xs -> length xs = k
 exactLength IsEmpty = Refl
 exactLength (IsLonger prf) = cong S (exactLength prf)
+
+export
+hasLength : (xs : List a) -> length xs = k -> HasLength k xs
+hasLength []       Refl = IsEmpty
+hasLength (x::xs') Refl = IsLonger (hasLength xs' Refl)
 
 --------------
 -- Cons length
