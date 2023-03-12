@@ -4,6 +4,12 @@
 
 module Newbase.Data.List.Theorems.List
 
+----------
+-- imports
+----------
+
+import Newbase.Data.List.Ops.Snoc
+
 --------------
 -- list append
 --------------
@@ -25,6 +31,6 @@ appendAssociative (x::xs') ys zs = cong (x::) (appendAssociative  xs' ys zs)
 
 export
 appendCons : (xs : List a) -> (y : a) -> (ys : List a) ->
-             xs ++ (y :: ys) = (xs ++ [y]) ++ ys
+             xs ++ (y :: ys) = (snoc y xs) ++ ys
 appendCons []      y ys = Refl
 appendCons (x::xs) y ys = cong (x::) (appendCons xs y ys)

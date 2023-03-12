@@ -9,6 +9,7 @@ module Newbase.Data.List.Theorems.Reverse
 ----------
 
 import Newbase.Data.List.Ops.Reverse
+import Newbase.Data.List.Ops.Snoc
 import Newbase.Data.List.Theorems.List
 
 ---------------
@@ -22,13 +23,13 @@ reverseOntoCons _ _ _ = Refl
 
 export
 reverseOntoSnocLeft : (x : a) -> (xs : List a) -> (ys : List a) ->
-                      reverseOnto' (xs ++ [x]) ys = reverseOnto' xs ys ++ [x]
+                      reverseOnto' (snoc x xs) ys = snoc x (reverseOnto' xs ys)
 reverseOntoSnocLeft _ _  []      = Refl
 reverseOntoSnocLeft x xs (y::ys) = reverseOntoSnocLeft x (y :: xs) ys
 
 export
 reverseOntoSnocRight : (x : a) -> (xs : List a) -> (ys : List a) ->
-                       reverseOnto' xs (ys ++ [x]) = x :: reverseOnto' xs ys
+                       reverseOnto' xs (snoc x ys) = x :: reverseOnto' xs ys
 reverseOntoSnocRight _ _  []      = Refl
 reverseOntoSnocRight x xs (y::ys) = reverseOntoSnocRight x (y :: xs) ys
 
@@ -70,13 +71,14 @@ reverseNil : reverse' [] = []
 reverseNil = Refl
 
 export
-reverseCons : (x : a) -> (xs : List a) -> reverse' (x::xs) = reverse' xs ++ [x]
+reverseCons : (x : a) -> (xs : List a) ->
+              reverse' (x::xs) = snoc x (reverse' xs)
 reverseCons _ []        = Refl
 reverseCons x (x'::xs') = reverseOntoSnocLeft x [x'] xs'
 
 export
 reverseSnoc : (x : a) -> (xs : List a) ->
-              reverse' (xs ++ [x]) = x :: reverse' xs
+              reverse' (snoc x xs) = x :: reverse' xs
 reverseSnoc x []        = Refl
 reverseSnoc x (x'::xs') = reverseOntoSnocRight x [x'] xs'
 
