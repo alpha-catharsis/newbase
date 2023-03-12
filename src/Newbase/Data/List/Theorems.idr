@@ -9,3 +9,4 @@ module Newbase.Data.List.Theorems
 -----------------
 
 import public Newbase.Data.List.Theorems.List
+import public Newbase.Data.List.Theorems.Reverse
