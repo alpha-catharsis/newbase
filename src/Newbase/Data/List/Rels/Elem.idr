@@ -4,9 +4,9 @@
 
 module Newbase.Data.List.Rels.Elem
 
----------------------
--- List element proof
----------------------
+---------------------------
+-- List element proposition
+---------------------------
 
 public export
 data Elem : a -> List a -> Type where
