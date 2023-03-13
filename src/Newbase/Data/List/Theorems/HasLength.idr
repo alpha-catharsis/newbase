@@ -24,49 +24,61 @@ exactLength IsEmpty = Refl
 exactLength (IsLonger prf) = cong S (exactLength prf)
 
 export
-hasLength : (xs : List a) -> length xs = k -> HasLength k xs
-hasLength []       Refl = IsEmpty
-hasLength (x::xs') Refl = IsLonger (hasLength xs' Refl)
+exactLengthRev : (xs : List a) -> length xs = k -> HasLength k xs
+exactLengthRev []       Refl = IsEmpty
+exactLengthRev (x::xs') Refl = IsLonger (exactLengthRev xs' Refl)
 
 --------------
 -- Cons length
 --------------
 
 export
-consLength : (0 x : a) -> HasLength k xs -> HasLength (S k) (x::xs)
-consLength _ = IsLonger
+consLength : HasLength k xs -> HasLength (S k) (x::xs)
+consLength = IsLonger
+
+export
+consLengthRev : HasLength (S k) (x::xs) -> HasLength k xs
+consLengthRev (IsLonger prf) = prf
+
+export
+consLengthSame : HasLength k (x::xs) -> HasLength k (y::xs)
+consLengthSame (IsLonger IsEmpty) = IsLonger IsEmpty
+consLengthSame (IsLonger (IsLonger prf)) =
+  IsLonger (consLengthSame {x} (IsLonger prf))
 
 --------------
 -- Snoc length
 --------------
 
 export
-snocLength : (0 x : a) -> (xs : List a) -> HasLength k xs ->
-             HasLength (S k) (snoc x xs)
-snocLength x []        IsEmpty        = IsLonger IsEmpty
-snocLength x (x'::xs') (IsLonger prf) = IsLonger (snocLength x xs' prf)
+snocLength : HasLength k xs -> HasLength (S k) (snoc x xs)
+snocLength IsEmpty        = IsLonger IsEmpty
+snocLength (IsLonger prf) = IsLonger (snocLength prf)
+
+export
+snocLengthRev : (xs : List a) -> HasLength (S k) (snoc x xs) -> HasLength k xs
+snocLengthRev []        prf = consLengthRev prf
+snocLengthRev (x'::xs') (IsLonger prf) = ?TODO -- TODO: complete
 
 ----------------
 -- Append length
 ----------------
 
 export
-appendLength : (xs : List a) -> (ys : List a) -> HasLength j xs ->
-               HasLength k ys -> HasLength (j + k) (xs ++ ys)
-appendLength []      _         IsEmpty         rprf           = rprf
-appendLength xs      []        lprf            IsEmpty        =
-  rewrite appendRightNil xs in
-  rewrite plusRightZero j in lprf
-appendLength (x::xs') (y::ys') (IsLonger lprf) (IsLonger rpf) =
-  IsLonger (appendLength xs' (y :: ys') lprf (IsLonger rpf))
+appendLength : HasLength j xs -> HasLength k ys -> HasLength (j + k) (xs ++ ys)
+appendLength IsEmpty         rprf           = rprf
+appendLength lprf            IsEmpty        = rewrite appendRightNil xs in
+                                              rewrite plusRightZero j in lprf
+appendLength (IsLonger lprf) (IsLonger rpf) =
+  IsLonger (appendLength lprf (IsLonger rpf))
 
 -----------------
 -- Reverse length
 -----------------
 
 export
-reverseLength : (xs : List a) -> HasLength w xs -> HasLength w (reverse xs)
+reverseLength : (xs : List a) -> HasLength k xs -> HasLength k (reverse xs)
 reverseLength []       IsEmpty        = IsEmpty
 reverseLength (x::xs') (IsLonger prf) =
   rewrite reverseOntoExtract [x] xs' in
-  snocLength x (reverse xs') (reverseLength xs' prf)
+  snocLength (reverseLength xs' prf)
