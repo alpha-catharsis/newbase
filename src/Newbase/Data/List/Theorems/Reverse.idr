@@ -9,7 +9,7 @@ module Newbase.Data.List.Theorems.Reverse
 ----------
 
 import Newbase.Data.List.Ops.Snoc
-import Newbase.Data.List.Theorems.List
+import Newbase.Data.List.Theorems.Append
 
 ---------------
 -- reverse onto
@@ -49,7 +49,8 @@ reverseOntoExtract : {ys : List a} -> reverseOnto xs ys =
 reverseOntoExtract {ys=[]}     = Refl
 reverseOntoExtract {ys=y::ys'} =
   rewrite reverseOntoExtract {xs=[y]} {ys=ys'} in
-  rewrite appendAssociative (reverseOnto [] ys') [y] xs in reverseOntoExtract
+  rewrite appendAssociative {xs=reverseOnto [] ys'} {ys=[y]} {zs=xs} in
+  reverseOntoExtract
 
 export
 reverseReverseOnto : {ys : List a} -> reverse (reverseOnto xs ys) =
@@ -77,7 +78,7 @@ reverseSnoc {xs=_::_} = reverseOntoSnocRight
 
 export
 reverseAppend : {ys : List a} -> reverse (xs ++ ys) = reverse ys ++ reverse xs
-reverseAppend {ys=[]}     = rewrite appendRightNil xs in Refl
+reverseAppend {ys=[]}     = rewrite appendRightNil {xs} in Refl
 reverseAppend {ys=y::ys'} =
   rewrite reverseOntoAppendRight {xs=[]} {ys=xs} {zs=y::ys'} in
   reverseOntoExtract {ys=y::ys'}

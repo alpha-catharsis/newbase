@@ -26,7 +26,7 @@ snocList : (xs : List a) -> SnocList xs
 snocList xs = snocListHelp Nil xs
   where snocListHelp : {left : List a} -> SnocList left -> (right : List a) ->
                        SnocList (left ++ right)
-        snocListHelp snoc []        = rewrite appendRightNil left in snoc
-        snocListHelp snoc (x :: xs) =
-          rewrite sym (appendAssociative left [x] xs) in
+        snocListHelp snoc []      = rewrite appendRightNil {xs=left} in snoc
+        snocListHelp snoc (x::xs) =
+          rewrite sym (appendAssociative {xs=left} {ys=[x]} {zs=xs}) in
           snocListHelp (Snoc x left snoc) xs

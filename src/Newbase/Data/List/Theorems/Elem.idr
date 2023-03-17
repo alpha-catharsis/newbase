@@ -10,7 +10,7 @@ module Newbase.Data.List.Theorems.Elem
 
 import Newbase.Data.List.Ops.Snoc
 import Newbase.Data.List.Rels.Elem
-import Newbase.Data.List.Theorems.List
+import Newbase.Data.List.Theorems.Append
 import Newbase.Data.List.Theorems.Reverse
 
 --------------
@@ -71,7 +71,7 @@ notSnocElem eqContra elemContra prf = case snocElemEither prf of
 
 export
 appendLeftElem : {ys : List a} -> Elem e xs -> Elem e (xs ++ ys)
-appendLeftElem {ys=[]}     prf       = rewrite appendRightNil xs in prf
+appendLeftElem {ys=[]}     prf       = rewrite appendRightNil {xs} in prf
 appendLeftElem {ys=_::_}  Here       = Here
 appendLeftElem {ys=_::_} (There prf) = There (appendLeftElem prf)
 

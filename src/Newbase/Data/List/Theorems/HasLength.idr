@@ -11,7 +11,7 @@ module Newbase.Data.List.Theorems.HasLength
 import Newbase.Data.List.Ops.Snoc
 import Newbase.Data.List.Rels.HasLength
 import Newbase.Data.List.Rels.Proper
-import Newbase.Data.List.Theorems.List
+import Newbase.Data.List.Theorems.Append
 import Newbase.Data.List.Theorems.Reverse
 import Newbase.Data.Nat.Theorems.Plus
 
@@ -126,7 +126,7 @@ snocExchangeLength {k=(S (S k'))} prf =
 export
 appendLength : HasLength j xs -> HasLength k ys -> HasLength (j + k) (xs ++ ys)
 appendLength IsEmpty         rprf           = rprf
-appendLength lprf            IsEmpty        = rewrite appendRightNil xs in
+appendLength lprf            IsEmpty        = rewrite appendRightNil {xs} in
                                               rewrite plusRightZero j in lprf
 appendLength (IsLonger lprf) (IsLonger rpf) =
   IsLonger (appendLength lprf (IsLonger rpf))

@@ -11,7 +11,7 @@ module Newbase.Data.List.Theorems.Proper
 import Newbase.Data.List.Ops.Snoc
 import Newbase.Data.List.Rels.HasLength
 import Newbase.Data.List.Rels.Proper
-import Newbase.Data.List.Theorems.List
+import Newbase.Data.List.Theorems.Append
 import Newbase.Data.List.Theorems.Reverse
 import Newbase.Data.List.Views.SnocList
 
