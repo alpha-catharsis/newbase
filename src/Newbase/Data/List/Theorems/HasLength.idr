@@ -139,7 +139,8 @@ export
 reverseLength : {xs : List a} -> HasLength k xs -> HasLength k (reverse xs)
 reverseLength {xs=[]}     IsEmpty        = IsEmpty
 reverseLength {xs=x::xs'} (IsLonger prf) =
-  rewrite reverseOntoExtract [x] xs' in snocLength (reverseLength prf)
+  rewrite reverseOntoExtract {xs=[x]} {ys=xs'} in
+  snocLength (reverseLength prf)
 
 -------------------
 -- length to proper

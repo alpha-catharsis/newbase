@@ -54,5 +54,4 @@ appendProperRight {xs=x::xs'} IsProper = IsProper
 
 appendReverse : {xs : List a} -> Proper xs -> Proper (reverse xs)
 appendReverse {xs=x::xs'} IsProper =
-  rewrite reverseOntoExtract [x] xs' in snocProper
-
+  rewrite reverseOntoExtract {xs=[x]} {ys=xs'} in snocProper

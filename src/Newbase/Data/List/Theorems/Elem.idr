@@ -102,7 +102,8 @@ notAppendElem lcontra rcontra prf = case appendElemEither prf of
 
 export
 reverseElem : {xs : List a} -> Elem e xs -> Elem e (reverse xs)
-reverseElem {xs=e::xs'} Here        = rewrite reverseOntoExtract [e] xs' in
-                                      snocElem
-reverseElem {xs=x::xs'} (There prf) = rewrite reverseOntoExtract [x] xs' in
-                                      appendLeftElem (reverseElem prf)
+reverseElem {xs=e::xs'} Here        =
+  rewrite reverseOntoExtract {xs=[e]} {ys=xs'} in snocElem
+reverseElem {xs=x::xs'} (There prf) =
+  rewrite reverseOntoExtract {xs=[x]} {ys=xs'} in
+  appendLeftElem (reverseElem prf)
