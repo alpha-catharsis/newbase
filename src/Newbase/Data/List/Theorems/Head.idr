@@ -25,5 +25,5 @@ headCons = Refl
 ------------
 
 export
-headElem : {0 xs : List a} -> x = head (x::xs) -> Elem x (x::xs)
-headElem Refl = Here
+headElem : {xs : List a} -> {auto 0 prf : Proper xs} -> x = head xs -> Elem x xs
+headElem {xs=_::_} Refl = Here
