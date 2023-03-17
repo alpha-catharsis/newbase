@@ -9,7 +9,7 @@ module Newbase.Data.List.Views.SnocList
 ----------
 
 import Newbase.Data.List.Ops.Snoc
-import Newbase.Data.List.Theorems.List
+import Newbase.Data.List.Theorems.Append
 
 ----------------
 -- SnocList view
