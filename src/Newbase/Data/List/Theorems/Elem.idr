@@ -45,24 +45,23 @@ notConsElem eqContra elemContra prf = case consElemEither prf of
 ---------------
 
 export
-snocElem : (0 e : a) -> (xs : List a) -> Elem e (snoc e xs)
-snocElem _ [] = Here
-snocElem e (_::xs') = There (snocElem e xs')
+snocElem : {xs : List a} -> Elem e (snoc e xs)
+snocElem {xs=[]}   = Here
+snocElem {xs=_::_} = There snocElem
 
 export
-snocElemEither : (0 e : a) -> (0 x : a) -> (xs : List a) ->
-                 Elem e (snoc x xs) -> Either (e = x) (Elem e xs)
-snocElemEither _ _ []       Here        = Left Refl
-snocElemEither _ _ (_::_)   Here        = Right Here
-snocElemEither e x (_::xs') (There prf) = case snocElemEither e x xs' prf of
+snocElemEither : {xs : List a} -> Elem e (snoc x xs) ->
+                 Either (e = x) (Elem e xs)
+snocElemEither {xs=[]}   Here        = Left Refl
+snocElemEither {xs=_::_} Here        = Right Here
+snocElemEither {xs=_::_} (There prf) = case snocElemEither prf of
   Left eqPrf => Left eqPrf
   Right prf' => Right (There prf')
 
 export
-notSnocElem : (0 e : a) -> (0 x : a) -> (xs : List a) -> Not (e = x) ->
-              Not (Elem e xs) -> Not (Elem e (snoc x xs))
-notSnocElem e x xs eqContra elemContra prf =
-  case snocElemEither e x xs prf of
+notSnocElem : {xs : List a} -> Not (e = x) -> Not (Elem e xs) ->
+              Not (Elem e (snoc x xs))
+notSnocElem eqContra elemContra prf = case snocElemEither prf of
     Left eqPrf => eqContra eqPrf
     Right prf' => elemContra prf'
 
@@ -71,35 +70,29 @@ notSnocElem e x xs eqContra elemContra prf =
 --------------
 
 export
-appendLeftElem : (0 e : a) -> (0 xs : List a) -> (ys : List a) ->
-                 Elem e xs -> Elem e (xs ++ ys)
-appendLeftElem _ xs       []       prf         =
-  rewrite appendRightNil xs in prf
-appendLeftElem _ (_::_)   (_::_)   Here        = Here
-appendLeftElem e (_::xs') (y::ys') (There prf) =
-  There (appendLeftElem e xs' (y :: ys') prf)
+appendLeftElem : {ys : List a} -> Elem e xs -> Elem e (xs ++ ys)
+appendLeftElem {ys=[]}     prf       = rewrite appendRightNil xs in prf
+appendLeftElem {ys=_::_}  Here       = Here
+appendLeftElem {ys=_::_} (There prf) = There (appendLeftElem prf)
 
 export
-appendRightElem : (0 e : a) -> (xs : List a) -> (0 ys : List a) ->
-                  Elem e ys -> Elem e (xs ++ ys)
-appendRightElem _ []       _  prf = prf
-appendRightElem e (_::xs') ys prf = There (appendRightElem e xs' ys prf)
+appendRightElem : {xs : List a} -> Elem e ys -> Elem e (xs ++ ys)
+appendRightElem {xs=[]}   prf = prf
+appendRightElem {xs=_::_} prf = There (appendRightElem prf)
 
 export
-appendElemEither : (0 e :a) -> (xs : List a) -> (0 ys : List a) ->
-                   Elem e (xs ++ ys) -> Either (Elem e xs) (Elem e ys)
-appendElemEither _ []       _  prf         = Right prf
-appendElemEither _ (_::_)   _  Here        = Left Here
-appendElemEither e (_::xs') ys (There prf) =
-  case appendElemEither e xs' ys prf of
+appendElemEither : {xs : List a} -> Elem e (xs ++ ys) ->
+                   Either (Elem e xs) (Elem e ys)
+appendElemEither {xs=[]}   prf         = Right prf
+appendElemEither {xs=_::_} Here        = Left Here
+appendElemEither {xs=_::_} (There prf) = case appendElemEither prf of
     Left lprf => Left (There lprf)
     Right rprf => Right rprf
 
 export
-notAppendElem : (0 e :a) -> (xs : List a) -> (0 ys : List a) ->
-                Not (Elem e xs) -> Not (Elem e ys) -> Not (Elem e (xs ++ ys))
-notAppendElem e xs ys lcontra rcontra prf =
-  case appendElemEither e xs ys prf of
+notAppendElem : {xs : List a} -> Not (Elem e xs) -> Not (Elem e ys) ->
+                Not (Elem e (xs ++ ys))
+notAppendElem lcontra rcontra prf = case appendElemEither prf of
     Left lprf => lcontra lprf
     Right rprf => rcontra rprf
 
@@ -108,9 +101,8 @@ notAppendElem e xs ys lcontra rcontra prf =
 ---------------
 
 export
-reverseElem : (0 e : a) -> (xs : List a) -> Elem e xs -> Elem e (reverse xs)
-reverseElem e (e::xs') Here        = rewrite reverseOntoExtract [e] xs' in
-                                     snocElem e (reverse xs')
-reverseElem e (x::xs') (There prf) = rewrite reverseOntoExtract [x] xs' in
-                                     appendLeftElem e (reverse xs') [x]
-                                                    (reverseElem e xs' prf)
+reverseElem : {xs : List a} -> Elem e xs -> Elem e (reverse xs)
+reverseElem {xs=e::xs'} Here        = rewrite reverseOntoExtract [e] xs' in
+                                      snocElem
+reverseElem {xs=x::xs'} (There prf) = rewrite reverseOntoExtract [x] xs' in
+                                      appendLeftElem (reverseElem prf)
