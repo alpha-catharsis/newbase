@@ -10,3 +10,4 @@ module Newbase.Data.List.Rels
 
 import public Newbase.Data.List.Rels.Elem
 import public Newbase.Data.List.Rels.HasLength
+import public Newbase.Data.List.Rels.Proper

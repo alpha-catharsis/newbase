@@ -2,12 +2,10 @@
 -- Module declaration
 ---------------------
 
-module Newbase.Data
+module Newbase.Data.List.Views
 
 -----------------
 -- Public imports
 -----------------
 
-import public Newbase.Data.Fin
-import public Newbase.Data.List
-import public Newbase.Data.Nat
+import public Newbase.Data.List.Views.SnocList

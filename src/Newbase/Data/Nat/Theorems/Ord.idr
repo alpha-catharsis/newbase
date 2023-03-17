@@ -153,9 +153,9 @@ export
 notLeftSuccLTE : Not (LTE m n) -> Not (LTE (S m) n)
 notLeftSuccLTE contra prf = contra (leftPredLTE prf)
 
---------------------------
+-------------------------
 -- LTE uninhabited values
---------------------------
+-------------------------
 
 export
 notLTELeftSucc : (0 m : Nat) -> Not (LTE (S m) m)
