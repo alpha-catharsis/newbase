@@ -83,4 +83,4 @@ lastAppend (_::x'::xs') ys         prf      =
 public export
 headReverse : {0 a : Type} -> (xs : List a) -> (0 prf : Proper xs) ->
               head (reverse xs) (reverseProper xs prf) = last xs prf
-headReverse xs prf = ?a -- TODO: complete
+headReverse (x::xs') IsProper = ?a -- TODO: complete
