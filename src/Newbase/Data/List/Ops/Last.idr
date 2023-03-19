@@ -2,7 +2,7 @@
 -- Module declaration
 ---------------------
 
-module Newbase.Data.List.Ops.Head
+module Newbase.Data.List.Ops.Last
 
 ----------
 -- imports
@@ -11,9 +11,10 @@ module Newbase.Data.List.Ops.Head
 import Newbase.Data.List.Rels.Proper
 
 ------------
--- list head
+-- list last
 ------------
 
 public export
-head : (xs : List a) -> (0 prf : Proper xs) -> a
-head (x::xs') _ = x
+last : (xs : List a) -> (0 prf : Proper xs) -> a
+last [x]        _ = x
+last (_::x::xs) _ = last (x::xs) IsProper

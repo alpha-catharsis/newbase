@@ -15,74 +15,91 @@ import Newbase.Data.List.Theorems.Append
 -- reverse onto
 ---------------
 
-export
-reverseOntoCons : reverseOnto (x::xs) ys = reverseOnto xs (x::ys)
-reverseOntoCons = Refl
+public export
+reverseOntoCons : (x : a) -> (xs : List a) -> (ys : List a) ->
+                  reverseOnto (x::xs) ys = reverseOnto xs (x :: ys)
+reverseOntoCons _ _ _ = Refl
 
-export
-reverseOntoSnocLeft : {ys : List a} -> reverseOnto (snoc x xs) ys =
-                                       snoc x (reverseOnto xs ys)
-reverseOntoSnocLeft {ys=[]}   = Refl
-reverseOntoSnocLeft {ys=_::_} = reverseOntoSnocLeft
+public export
+reverseOntoSnocLeft : (x : a) -> (xs : List a) -> (ys : List a) ->
+                      reverseOnto (snoc x xs) ys = snoc x (reverseOnto xs ys)
+reverseOntoSnocLeft _ _  []      = Refl
+reverseOntoSnocLeft x xs (y::ys) = reverseOntoSnocLeft x (y :: xs) ys
 
-export
-reverseOntoSnocRight : {ys : List a} -> reverseOnto xs (snoc x ys) =
-                                        x::reverseOnto xs ys
-reverseOntoSnocRight {ys=[]}   = Refl
-reverseOntoSnocRight {ys=_::_} = reverseOntoSnocRight
+public export
+reverseOntoSnocRight : (x : a) -> (xs : List a) -> (ys : List a) ->
+                       reverseOnto xs (snoc x ys) = x :: reverseOnto xs ys
+reverseOntoSnocRight _ _  []      = Refl
+reverseOntoSnocRight x xs (y::ys) = reverseOntoSnocRight x (y :: xs) ys
 
-export
-reverseOntoAppendLeft : {xs : List a} -> reverseOnto (xs ++ ys) zs =
-                                         reverseOnto ys (reverseOnto zs xs)
-reverseOntoAppendLeft {xs=[]}   = Refl
-reverseOntoAppendLeft {xs=x::_} = reverseOntoAppendLeft {zs=x::zs}
+public export
+reverseOntoAppendLeft : (xs, ys, zs : List a) ->
+                        reverseOnto (xs ++ ys) zs =
+                        reverseOnto ys (reverseOnto zs xs)
+reverseOntoAppendLeft []       yz zs = Refl
+reverseOntoAppendLeft (x::xs') yz zs = reverseOntoAppendLeft xs' yz (x :: zs)
 
-export
-reverseOntoAppendRight : {ys : List a} -> reverseOnto xs (ys ++ zs) =
-                                          reverseOnto (reverseOnto xs ys) zs
-reverseOntoAppendRight {ys=[]}   = Refl
-reverseOntoAppendRight {ys=_::_} = reverseOntoAppendRight
+public export
+reverseOntoAppendRight : (xs, ys, zs : List a) ->
+                         reverseOnto xs (ys ++ zs) =
+                         reverseOnto (reverseOnto xs ys) zs
+reverseOntoAppendRight xs []       zs = Refl
+reverseOntoAppendRight xs (y::ys') zs = reverseOntoAppendRight (y :: xs) ys' zs
 
-export
-reverseOntoExtract : {ys : List a} -> reverseOnto xs ys =
-                                      reverseOnto [] ys ++ xs
-reverseOntoExtract {ys=[]}     = Refl
-reverseOntoExtract {ys=y::ys'} =
-  rewrite reverseOntoExtract {xs=[y]} {ys=ys'} in
-  rewrite appendAssociative {xs=reverseOnto [] ys'} {ys=[y]} {zs=xs} in
-  reverseOntoExtract
+public export
+reverseOntoExtract : (xs, ys : List a) ->
+                     reverseOnto xs ys = reverseOnto [] ys ++ xs
+reverseOntoExtract xs []       = Refl
+reverseOntoExtract xs (y::ys') =
+  rewrite reverseOntoExtract [y] ys' in
+  rewrite appendAssociative (reverseOnto [] ys') [y] xs in
+  reverseOntoExtract (y :: xs) ys'
 
-export
-reverseReverseOnto : {ys : List a} -> reverse (reverseOnto xs ys) =
-                                      reverseOnto ys xs
-reverseReverseOnto {ys=[]}   = Refl
-reverseReverseOnto {ys=_::_} = reverseReverseOnto
+public export
+reverseReverseOnto : (xs, ys : List a) ->
+                     reverse (reverseOnto xs ys) = reverseOnto ys xs
+reverseReverseOnto _  []       = Refl
+reverseReverseOnto xs (y::ys') = reverseReverseOnto (y::xs) ys'
 
 ----------
 -- reverse
 ----------
 
-export
+public export
 reverseNil : reverse [] = []
 reverseNil = Refl
 
-export
-reverseCons : {xs : List a} -> reverse (x::xs) = snoc x (reverse xs)
-reverseCons {xs=[]}   = Refl
-reverseCons {xs=_::_} = reverseOntoSnocLeft
+public export
+reverseReverse : (xs : List a) -> reverse (reverse xs) = xs
+reverseReverse xs = reverseReverseOnto [] xs
 
-export
-reverseSnoc : {xs : List a} -> reverse (snoc x xs) = x::reverse xs
-reverseSnoc {xs=[]}    = Refl
-reverseSnoc {xs=_::_} = reverseOntoSnocRight
+---------------
+-- reverse cons
+---------------
 
-export
-reverseAppend : {ys : List a} -> reverse (xs ++ ys) = reverse ys ++ reverse xs
-reverseAppend {ys=[]}     = rewrite appendRightNil {xs} in Refl
-reverseAppend {ys=y::ys'} =
-  rewrite reverseOntoAppendRight {xs=[]} {ys=xs} {zs=y::ys'} in
-  reverseOntoExtract {ys=y::ys'}
+public export
+reverseCons : (x : a) -> (xs : List a) ->
+              reverse (x::xs) = snoc x (reverse xs)
+reverseCons _ []        = Refl
+reverseCons x (x'::xs') = reverseOntoSnocLeft x [x'] xs'
 
-export
-reverseReverse : {xs : List a} -> reverse (reverse xs) = xs
-reverseReverse = reverseReverseOnto
+---------------
+-- reverse snoc
+---------------
+
+public export
+reverseSnoc : (x : a) -> (xs : List a) ->
+              reverse (snoc x xs) = x :: reverse xs
+reverseSnoc x []        = Refl
+reverseSnoc x (x'::xs') = reverseOntoSnocRight x [x'] xs'
+
+-----------------
+-- reverse append
+-----------------
+
+public export
+reverseAppend : (xs, ys : List a) ->
+                reverse (xs ++ ys) = reverse ys ++ reverse xs
+reverseAppend xs []       = rewrite appendRightNil xs in Refl
+reverseAppend xs (y::ys') = rewrite reverseOntoAppendRight [] xs (y :: ys') in
+                            reverseOntoExtract (reverseOnto [] xs) (y :: ys')

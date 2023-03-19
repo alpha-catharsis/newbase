@@ -19,6 +19,7 @@ import Newbase.Data.List.Views.SnocList
 -- uninhabited nil proper
 -------------------------
 
+public export
 notProperNil : Not (Proper [])
 notProperNil _ impossible
 
@@ -26,6 +27,7 @@ notProperNil _ impossible
 -- cons proper
 --------------
 
+public export
 consProper : Proper (x::xs)
 consProper = IsProper
 
@@ -33,25 +35,31 @@ consProper = IsProper
 -- snoc proper
 --------------
 
-snocProper : {xs : List a} -> Proper (snoc x xs)
-snocProper {xs=[]}     = IsProper
-snocProper {xs=x::xs'} = IsProper
+public export
+snocProper : (0 x : a) -> (xs : List a) -> Proper (snoc x xs)
+snocProper _ []       = IsProper
+snocProper _ (x::xs') = IsProper
 
 ----------------
 -- append proper
 ----------------
 
-appendProperLeft : Proper xs -> Proper (xs ++ ys)
-appendProperLeft IsProper = IsProper
+public export
+appendProperLeft : (0 xs : List a) -> (0 ys : List a) -> (0 prf : Proper xs) ->
+                   Proper (xs ++ ys)
+appendProperLeft _ _ IsProper = IsProper
 
-appendProperRight : {xs : List a} -> Proper ys -> Proper (xs ++ ys)
-appendProperRight {xs=[]}     IsProper = IsProper
-appendProperRight {xs=x::xs'} IsProper = IsProper
+public export
+appendProperRight : (xs : List a) -> (ys : List a) -> (0 prf : Proper ys) ->
+                    Proper (xs ++ ys)
+appendProperRight []       _ IsProper = IsProper
+appendProperRight (x::xs') _ IsProper = IsProper
 
 -----------------
 -- reverse proper
 -----------------
 
-appendReverse : {xs : List a} -> Proper xs -> Proper (reverse xs)
-appendReverse {xs=x::xs'} IsProper =
-  rewrite reverseOntoExtract {xs=[x]} {ys=xs'} in snocProper
+public export
+reverseProper : (xs : List a) -> (0 prf : Proper xs) -> Proper (reverse xs)
+reverseProper (x::xs') IsProper =
+  rewrite reverseOntoExtract [x] xs' in snocProper x (reverse xs')

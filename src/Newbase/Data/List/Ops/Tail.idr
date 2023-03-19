@@ -2,7 +2,7 @@
 -- Module declaration
 ---------------------
 
-module Newbase.Data.List.Ops.Head
+module Newbase.Data.List.Ops.Tail
 
 ----------
 -- imports
@@ -11,9 +11,9 @@ module Newbase.Data.List.Ops.Head
 import Newbase.Data.List.Rels.Proper
 
 ------------
--- list head
+-- list tail
 ------------
 
 public export
-head : (xs : List a) -> (0 prf : Proper xs) -> a
-head (x::xs') _ = x
+tail : (xs : List a) -> (0 prf : Proper xs) -> List a
+tail (x::xs') _ = xs'

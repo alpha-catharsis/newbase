@@ -2,7 +2,7 @@
 -- Module declaration
 ---------------------
 
-module Newbase.Data.List.Ops.Head
+module Newbase.Data.List.Ops.Init
 
 ----------
 -- imports
@@ -11,9 +11,10 @@ module Newbase.Data.List.Ops.Head
 import Newbase.Data.List.Rels.Proper
 
 ------------
--- list head
+-- list init
 ------------
 
 public export
-head : (xs : List a) -> (0 prf : Proper xs) -> a
-head (x::xs') _ = x
+init : (xs : List a) -> (0 prf : Proper xs) -> List a
+init [x]          _ = []
+init (x::x'::xs') _ = x::init (x'::xs') IsProper

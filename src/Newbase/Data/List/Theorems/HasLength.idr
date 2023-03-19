@@ -9,6 +9,7 @@ module Newbase.Data.List.Theorems.HasLength
 ----------
 
 import Newbase.Data.List.Ops.Snoc
+import Newbase.Data.List.Ops.Tail
 import Newbase.Data.List.Rels.HasLength
 import Newbase.Data.List.Rels.Proper
 import Newbase.Data.List.Theorems.Append
@@ -19,7 +20,7 @@ import Newbase.Data.Nat.Theorems.Plus
 -- uninhabited nil length
 -------------------------
 
-export
+public export
 notLongNil : Not (HasLength (S k) [])
 notLongNil _ impossible
 
@@ -27,7 +28,7 @@ notLongNil _ impossible
 -- unique length
 ----------------
 
-export
+public export
 lengthUnique : HasLength j xs -> HasLength k xs -> j = k
 lengthUnique IsEmpty         IsEmpty         = Refl
 lengthUnique (IsLonger lprf) (IsLonger rprf) = cong S (lengthUnique lprf rprf)
@@ -36,39 +37,40 @@ lengthUnique (IsLonger lprf) (IsLonger rprf) = cong S (lengthUnique lprf rprf)
 -- exact length
 ---------------
 
-export
+public export
 exactLength : HasLength k xs -> length xs = k
 exactLength IsEmpty        = Refl
 exactLength (IsLonger prf) = cong S (exactLength prf)
 
-export
-exactLengthRev : {xs : List a} -> length xs = k -> HasLength k xs
-exactLengthRev {xs=[]}     Refl = IsEmpty
-exactLengthRev {xs=x::xs'} Refl = IsLonger (exactLengthRev Refl)
+public export
+exactLengthRev : (xs : List a) -> (0 k : Nat) -> length xs = k -> HasLength k xs
+exactLengthRev []       _                Refl = IsEmpty
+exactLengthRev (x::xs') (S (length xs')) Refl =
+  IsLonger (exactLengthRev xs' (length xs') Refl)
 
 --------------
 -- Cons length
 --------------
 
-export
+public export
 notEmptyCons : Not (HasLength 0 (x::xs))
 notEmptyCons _ impossible
 
-export
+public export
 consLengthSame : HasLength k (x::xs) -> HasLength k (y::xs)
 consLengthSame (IsLonger IsEmpty)        = IsLonger IsEmpty
 consLengthSame (IsLonger (IsLonger prf)) =
   IsLonger (consLengthSame {x} (IsLonger prf))
 
-export
+public export
 consLength : HasLength k xs -> HasLength (S k) (x::xs)
 consLength = IsLonger
 
-export
+public export
 consLengthRev : HasLength (S k) (x::xs) -> HasLength k xs
 consLengthRev (IsLonger prf) = prf
 
-export
+public export
 consExchangeLength : HasLength k (x::(x'::xs)) -> HasLength k (x'::(x::xs))
 consExchangeLength (IsLonger (IsLonger prf)) = IsLonger (IsLonger prf)
 
@@ -76,41 +78,41 @@ consExchangeLength (IsLonger (IsLonger prf)) = IsLonger (IsLonger prf)
 -- Snoc length
 --------------
 
-export
+public export
 notEmptySnoc : {xs : List a} -> Not (HasLength 0 (snoc x xs))
 notEmptySnoc {xs=[]}   _ impossible
 notEmptySnoc {xs=_::_} _ impossible
 
-export
+public export
 snocLengthSame : {xs : List a} -> HasLength k (snoc x xs) ->
                  HasLength k (snoc y xs)
 snocLengthSame {xs=[]}      (IsLonger IsEmpty) = (IsLonger IsEmpty)
 snocLengthSame {xs=x'::xs'} (IsLonger prf)     =
   consLength (snocLengthSame prf)
 
-export
+public export
 snocLength : HasLength k xs -> HasLength (S k) (snoc x xs)
 snocLength IsEmpty        = IsLonger IsEmpty
 snocLength (IsLonger prf) = IsLonger (snocLength prf)
 
-export
+public export
 consSnocLength : HasLength (S k) (x::xs) -> HasLength (S k) (snoc x' xs)
 consSnocLength prf = snocLength (consLengthRev prf)
 
-export
+public export
 snocConsLength : {xs : List a} -> HasLength k (snoc x' xs) ->
                  HasLength k (x::xs)
 snocConsLength {xs=[]}     (IsLonger IsEmpty) = IsLonger IsEmpty
 snocConsLength {xs=x'::xs} (IsLonger prf)     =
   consExchangeLength (consLength (snocConsLength prf))
 
-export
+public export
 snocLengthRev : {xs : List a} -> HasLength (S k) (snoc x xs) ->
                 HasLength k xs
 snocLengthRev {xs=[]}      (IsLonger IsEmpty) = IsEmpty
 snocLengthRev {xs=x'::xs'} (IsLonger prf)     = snocConsLength prf
 
-export
+public export
 snocExchangeLength : {k : Nat} -> {xs : List a} -> {x' : a} ->
                      HasLength k (snoc x (snoc  x' xs)) ->
                      HasLength k (snoc x' (snoc  x xs))
@@ -123,10 +125,10 @@ snocExchangeLength {k=(S (S k'))} prf =
 -- Append length
 ----------------
 
-export
+public export
 appendLength : HasLength j xs -> HasLength k ys -> HasLength (j + k) (xs ++ ys)
 appendLength IsEmpty         rprf           = rprf
-appendLength lprf            IsEmpty        = rewrite appendRightNil {xs} in
+appendLength lprf            IsEmpty        = rewrite appendRightNil xs in
                                               rewrite plusRightZero j in lprf
 appendLength (IsLonger lprf) (IsLonger rpf) =
   IsLonger (appendLength lprf (IsLonger rpf))
@@ -135,17 +137,26 @@ appendLength (IsLonger lprf) (IsLonger rpf) =
 -- Reverse length
 -----------------
 
-export
+public export
 reverseLength : {xs : List a} -> HasLength k xs -> HasLength k (reverse xs)
 reverseLength {xs=[]}     IsEmpty        = IsEmpty
 reverseLength {xs=x::xs'} (IsLonger prf) =
-  rewrite reverseOntoExtract {xs=[x]} {ys=xs'} in
+  rewrite reverseOntoExtract [x] xs' in
   snocLength (reverseLength prf)
 
 -------------------
 -- length to proper
 -------------------
 
-export
+public export
 lengthProper : HasLength (S k) xs -> Proper xs
 lengthProper (IsLonger prf) = IsProper
+
+--------------
+-- Tail length
+--------------
+
+public export
+tailLength : (prf : HasLength (S k) xs) ->
+             HasLength k (tail xs (lengthProper prf))
+tailLength (IsLonger prf) = prf
