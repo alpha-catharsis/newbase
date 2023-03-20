@@ -83,4 +83,24 @@ lastAppend (_::x'::xs') ys         prf      =
 public export
 headReverse : {0 a : Type} -> (xs : List a) -> (0 prf : Proper xs) ->
               head (reverse xs) (reverseProper xs prf) = last xs prf
-headReverse (x::xs') IsProper = ?a -- TODO: complete
+headReverse (x::xs') IsProper with (snocList xs')
+  headReverse [x]                 IsProper | Nil             = Refl
+  headReverse (x::(xs'' ++ [x'])) IsProper | Snoc x' xs'' sl =
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite reverseOntoSnocRight x' [x] xs'' in
+    rewrite lastSnoc x' (x::xs'') in Refl
+
+---------------
+-- Last reverse
+---------------
+
+public export
+lastReverse : {0 a : Type} -> (xs : List a) -> (0 prf : Proper xs) ->
+              last (reverse xs) (reverseProper xs prf) = head xs prf
+lastReverse (x::xs') isProper with (snocList xs')
+  lastReverse [x]                 IsProper | Nil             = Refl
+  lastReverse (x::(xs'' ++ [x'])) IsProper | Snoc x' xs'' sl =
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite reverseOntoSnocRight x' [x] xs'' in
+    rewrite reverseOntoExtract [x] xs'' in
+    rewrite lastSnoc x (x'::reverseOnto [] xs'') in Refl
