@@ -9,8 +9,10 @@ module Newbase.Data.List.Theorems.HeadLast
 ----------
 
 import Newbase.Data.List.Ops.Head
+import Newbase.Data.List.Ops.Init
 import Newbase.Data.List.Ops.Last
 import Newbase.Data.List.Ops.Snoc
+import Newbase.Data.List.Ops.Tail
 import Newbase.Data.List.Rels.Elem
 import Newbase.Data.List.Rels.Proper
 import Newbase.Data.List.Theorems.Append
@@ -53,6 +55,26 @@ lastSnoc : (0 x : a) -> (xs : List a) -> last (snoc x xs) (snocProper x xs) = x
 lastSnoc _ []           = Refl
 lastSnoc _ [x']         = Refl
 lastSnoc x (_::x'::xs') = lastSnoc x (x'::xs')
+
+------------
+-- Head init
+------------
+
+public export
+headInit : (0 x : a) -> (0 xs : List a) -> (0 prf : Proper xs) ->
+           head (init (x::xs) IsProper) (initConsProper x xs prf) = x
+headInit _ _ IsProper = Refl
+
+------------
+-- Last tail
+------------
+
+public export
+lastTail : (x : a) -> (xs : List a) -> (prf : Proper xs) ->
+           last (tail (snoc x xs) (snocProper x xs))
+                (tailSnocProper x xs prf) = x
+lastTail x [x'] IsProper = Refl
+lastTail x (x'::x''::xs') IsProper = rewrite lastSnoc x (x''::xs') in Refl
 
 --------------
 -- Head append
