@@ -61,19 +61,13 @@ appendProperRight (x::xs') _ IsProper = IsProper
 -- tail proper
 --------------
 
-public export
-tailSnocProper : (0x : a) -> (xs : List a) -> (0 prf : Proper xs) ->
-                 Proper (tail (snoc x xs) (snocProper x xs))
-tailSnocProper x (_::xs') IsProper = appendProperRight xs' [x] IsProper
+-- TODO: complete
 
 --------------
 -- Init proper
 --------------
 
-public export
-initConsProper : (0 x : a) -> (0 xs : List a) -> (0 prf : Proper xs) ->
-                 Proper (init (x::xs) IsProper)
-initConsProper _ (_::_) IsProper = IsProper
+-- TODO: complete
 
 -----------------
 -- reverse proper
@@ -83,3 +77,4 @@ public export
 reverseProper : (xs : List a) -> (0 prf : Proper xs) -> Proper (reverse xs)
 reverseProper (x::xs') IsProper =
   rewrite reverseOntoExtract [x] xs' in snocProper x (reverse xs')
+

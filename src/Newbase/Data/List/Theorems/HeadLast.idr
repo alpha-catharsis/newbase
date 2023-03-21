@@ -60,21 +60,13 @@ lastSnoc x (_::x'::xs') = lastSnoc x (x'::xs')
 -- Head init
 ------------
 
-public export
-headInit : (0 x : a) -> (0 xs : List a) -> (0 prf : Proper xs) ->
-           head (init (x::xs) IsProper) (initConsProper x xs prf) = x
-headInit _ _ IsProper = Refl
+-- TODO: complete
 
 ------------
 -- Last tail
 ------------
 
-public export
-lastTail : (x : a) -> (xs : List a) -> (prf : Proper xs) ->
-           last (tail (snoc x xs) (snocProper x xs))
-                (tailSnocProper x xs prf) = x
-lastTail x [x'] IsProper = Refl
-lastTail x (x'::x''::xs') IsProper = rewrite lastSnoc x (x''::xs') in Refl
+-- TODO: complete
 
 --------------
 -- Head append

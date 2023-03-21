@@ -15,4 +15,4 @@ import public Newbase.Data.List.Theorems.Index
 import public Newbase.Data.List.Theorems.HasLength
 import public Newbase.Data.List.Theorems.Proper
 import public Newbase.Data.List.Theorems.Reverse
-import public Newbase.Data.List.Theorems.Tail
+import public Newbase.Data.List.Theorems.TailInit
