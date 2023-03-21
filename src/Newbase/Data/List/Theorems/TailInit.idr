@@ -60,7 +60,7 @@ initSnoc x (x'::xs') = rewrite initCons x' (snoc x xs') (snocProper x xs') in
 -----------------
 
 public export
-headTailCons : (prf : Proper xs) -> head xs prf::tail xs prf = xs
+headTailCons : (0 prf : Proper xs) -> head xs prf::tail xs prf = xs
 headTailCons IsProper = Refl
 
 -----------------
@@ -68,7 +68,7 @@ headTailCons IsProper = Refl
 -----------------
 
 public export
-lastInitSnoc : (xs : List a) -> (prf : Proper xs) ->
+lastInitSnoc : (xs : List a) -> (0 prf : Proper xs) ->
                snoc (last xs prf) (init xs prf) = xs
 lastInitSnoc (x::xs') IsProper with (snocList xs')
   lastInitSnoc [x]                 IsProper | Nil            = Refl
@@ -76,3 +76,26 @@ lastInitSnoc (x::xs') IsProper with (snocList xs')
     rewrite initCons x (xs'' ++ [x']) (snocProper x' xs'') in
     rewrite initSnoc x' xs'' in
     rewrite lastSnoc x' (x::xs'') in Refl
+
+--------------
+-- Tail append
+--------------
+
+public export
+tailAppend : (0 xs : List a) -> (0 ys : List a) -> (0 prf : Proper xs) ->
+             tail (xs ++ ys) (appendProperLeft xs ys prf) = tail xs prf ++ ys
+tailAppend (_::_) _ IsProper = Refl
+
+--------------
+-- Init append
+--------------
+
+public export
+initAppend : (xs : List a) -> (0 ys : List a) -> (0 prf : Proper ys) ->
+             init (xs ++ ys) (appendProperRight xs ys prf) = xs ++ init ys prf
+initAppend []       (_::_)   IsProper = Refl
+initAppend (x::xs') (y::ys') IsProper =
+  rewrite initCons x (xs' ++ (y::ys'))
+                   (appendProperRight xs' (y::ys') IsProper) in
+  cong (x::) (initAppend xs' (y :: ys') IsProper)
+
