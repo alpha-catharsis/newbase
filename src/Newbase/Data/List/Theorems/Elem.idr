@@ -28,13 +28,13 @@ notElemNil _ impossible
 ------------
 
 public export
-headElem : (0 x : a) -> (xs : List a) -> (0 prf : Proper xs) ->
+headElem : (0 x : a) -> (0 xs : List a) -> (0 prf : Proper xs) ->
            x = head xs prf -> Elem x xs
 headElem _ (_::_) IsProper Refl = Here
 
----------------
--- Cons element
----------------
+------------
+-- Cons elem
+------------
 
 public export
 consElem : Elem x (x::xs)
