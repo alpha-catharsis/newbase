@@ -16,6 +16,7 @@ import Newbase.Data.List.Ops.Tail
 import Newbase.Data.List.Rels.Proper
 import Newbase.Data.List.Theorems.HeadLast
 import Newbase.Data.List.Theorems.Proper
+import Newbase.Data.List.Theorems.Reverse
 import Newbase.Data.List.Views.SnocList
 
 ------------
@@ -99,3 +100,33 @@ initAppend (x::xs') (y::ys') IsProper =
                    (appendProperRight xs' (y::ys') IsProper) in
   cong (x::) (initAppend xs' (y :: ys') IsProper)
 
+---------------
+-- Tail Reverse
+---------------
+
+public export
+tailReverse : (xs : List a) -> (prf : Proper xs) ->
+              tail (reverse xs) (reverseProper xs prf) = reverse (init xs prf)
+tailReverse (x::xs') IsProper with (snocList xs')
+  tailReverse [x]                 IsProper | Nil            = Refl
+  tailReverse (x::(xs'' ++ [x'])) IsProper | Snoc x' xs'' _ =
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite reverseOntoExtract [x] (snoc x' xs'') in
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite initSnoc x' (x::xs'') in
+    rewrite reverseOntoExtract [x] xs'' in Refl
+
+---------------
+-- Init Reverse
+---------------
+
+public export
+initReverse : (xs : List a) -> (prf : Proper xs) ->
+              init (reverse xs) (reverseProper xs prf) = reverse (tail xs prf)
+initReverse (x::xs') IsProper with (snocList xs')
+  initReverse [x]                 IsProper | Nil            = Refl
+  initReverse (x::(xs'' ++ [x'])) IsProper | Snoc x' xs'' _ =
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite reverseOntoExtract [x] (snoc x' xs'') in
+    rewrite reverseOntoSnocRight x' [] xs'' in
+    rewrite initSnoc x (x'::reverse xs'') in Refl
