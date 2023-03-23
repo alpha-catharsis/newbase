@@ -14,6 +14,8 @@ import public Newbase.Data.List.Theorems.Has
 import public Newbase.Data.List.Theorems.HeadLast
 import public Newbase.Data.List.Theorems.Index
 import public Newbase.Data.List.Theorems.HasLength
+import public Newbase.Data.List.Theorems.Postfix
+import public Newbase.Data.List.Theorems.Prefix
 import public Newbase.Data.List.Theorems.Proper
 import public Newbase.Data.List.Theorems.Reverse
 import public Newbase.Data.List.Theorems.TailInit

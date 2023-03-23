@@ -4,9 +4,9 @@
 
 module Newbase.Data.List.Rels.Has
 
---------------------------
--- List length proposition
---------------------------
+----------------------
+-- List has k elements
+----------------------
 
 public export
 data Has : (0 k : Nat) -> (0 e : a) -> (0 xs : List a) -> Type where
