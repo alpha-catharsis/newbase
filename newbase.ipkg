@@ -20,7 +20,7 @@ main = Main
 
 -- name of executable
 executable = "newbase"
-opts = "--total --Werror"
+opts = "--total --Werror --no-prelude"
 sourcedir = "src"
 -- builddir =
 -- outputdir =
