@@ -2,12 +2,10 @@
 -- Module declaration
 ---------------------
 
-module Newbase.Data
+module Newbase.Data.Unit
 
 -----------------
 -- Public imports
 -----------------
 
-import public Newbase.Data.Nat
-import public Newbase.Data.Pair
-import public Newbase.Data.Void
+import public Newbase.Data.Unit.Unit

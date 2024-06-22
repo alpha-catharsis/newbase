@@ -9,3 +9,5 @@ module Newbase
 -----------------
 
 import public Newbase.Data
+import public Newbase.Function
+import public Newbase.Relation
